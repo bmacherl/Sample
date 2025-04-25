@@ -45,8 +45,8 @@ if email:
         user = df_users[df_users['email'] == email].squeeze()
         st.success(f"Welcome {user['name']}! You are logged in as **{user['role']}**.")
 
-        # Check if 'working' column exists for students
-        is_student_working = user.get('working', 'No') == "Yes"  # Default to 'No' if 'working' column doesn't exist
+        # Normalize 'working' column to ensure it works for comparison
+        is_student_working = str(user.get('working', 'No')).strip().lower() == "yes"
 
         # Sidebar menu with icons to navigate to different pages
         st.sidebar.title("📂 Menu")
