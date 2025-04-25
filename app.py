@@ -45,7 +45,7 @@ if email:
         user = df_users[df_users['email'] == email].squeeze()
         st.success(f"Welcome {user['name']}! You are logged in as **{user['role']}**.")
 
-        # Normalize 'working' column to ensure it works for comparison
+        # Check if 'working' column exists for students, normalize it
         is_student_working = str(user.get('working', 'No')).strip().lower() == "yes"
 
         # Sidebar menu with icons to navigate to different pages
@@ -107,6 +107,13 @@ if email:
                             st.write(f"Attended Classes: {stats['attended']} / {stats['classes']}")
                             st.write(f"Attended Hours: {attended_hours:.1f}")
                             st.pyplot(pie_chart(attended_hours, stats["total_hours"] - attended_hours))
+
+                        # Add the "Record Attendance" button
+                        record_button = st.button("Record Attendance")
+                        
+                        if record_button:
+                            st.success("Attendance recorded successfully!")  # Add your logic here to record attendance
+
                 else:
                     semester = st.selectbox("Select Semester", ["Semester 1", "Semester 2", "Semester 3"])
 
