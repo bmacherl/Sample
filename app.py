@@ -15,6 +15,13 @@ def pie_chart(attended, missed):
     ax.axis("equal")
     return fig
 
+# ---- Load users ----
+@st.cache_data
+def load_users():
+    return pd.read_csv("users.csv")
+
+df_users = load_users()
+
 # ---- Page settings ----
 st.set_page_config(page_title="HRMS Portal", layout="wide")
 
@@ -23,13 +30,6 @@ st.image("asu_banner.jpg", use_container_width=True)
 
 # ---- App Title ----
 st.markdown("<h2 style='text-align: center;'>Welcome to MyASU-Inspired HRMS Portal</h2>", unsafe_allow_html=True)
-
-# ---- Load users ----
-@st.cache_data
-def load_users():
-    return pd.read_csv("users.csv")
-
-df_users = load_users()
 
 # ---- Login Section ----
 st.subheader("🔐 Login")
@@ -40,20 +40,20 @@ if email:
         user = df_users[df_users['email'] == email].squeeze()
         st.success(f"Welcome {user['name']}! You are logged in as **{user['role']}**.")
 
-        # Sidebar menu using radio with icons
+        # Sidebar menu with icons to navigate to different pages
         st.sidebar.title("📂 Menu")
         menu = st.sidebar.radio("Navigate to:", 
             ["👤 Profile", "📆 Attendance", "💵 Payroll", "🏦 Finances"]
         )
         role = user['role']
 
-        # ---- Profile Section ----
+        # ---- Profile Page ----
         if menu == "👤 Profile":
             st.subheader("👤 Profile")
             st.write(user)
 
-        # ---- Attendance Section ----
-        if menu == "📆 Attendance":
+        # ---- Attendance Page ----
+        elif menu == "📆 Attendance":
             if role == "Student":  # ✅ Checking exactly as written in the CSV
                 st.subheader("📆 Attendance")
 
@@ -99,16 +99,16 @@ if email:
             else:
                 st.warning("⛔ You do not have permission to view attendance.")
 
-        # ---- Payroll Section ----
-        if menu == "💵 Payroll":
+        # ---- Payroll Page ----
+        elif menu == "💵 Payroll":
             if role in ["Staff", "Payroll_Admin", "Admin"]:
                 st.subheader("💵 Payroll")
                 st.write("Payroll summary coming soon!")
             else:
                 st.warning("Access denied: Payroll is restricted.")
 
-        # ---- Finances Section ----
-        if menu == "🏦 Finances":
+        # ---- Finances Page ----
+        elif menu == "🏦 Finances":
             if role in ["Student", "Admin"]:
                 st.subheader("🏦 Finances")
                 st.write("Fee info and payments coming soon!")
