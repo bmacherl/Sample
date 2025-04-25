@@ -15,12 +15,17 @@ def pie_chart(attended, missed):
     ax.axis("equal")
     return fig
 
-# ---- Load users ----
+# ---- Load users and courses ----
 @st.cache_data
 def load_users():
     return pd.read_csv("users.csv")
 
+@st.cache_data
+def load_courses():
+    return pd.read_csv("courses.csv")
+
 df_users = load_users()
+df_courses = load_courses()
 
 # ---- Page settings ----
 st.set_page_config(page_title="HRMS Portal", layout="wide")
@@ -43,7 +48,7 @@ if email:
         # Sidebar menu with icons to navigate to different pages
         st.sidebar.title("📂 Menu")
         menu = st.sidebar.radio("Navigate to:", 
-            ["👤 Profile", "📆 Attendance", "💵 Payroll", "🏦 Finances"]
+            ["👤 Profile", "📆 Attendance", "💵 Payroll", "🏦 Finances", "📚 Courses"]
         )
         role = user['role']
 
@@ -114,5 +119,27 @@ if email:
                 st.write("Fee info and payments coming soon!")
             else:
                 st.warning("Access denied: Finances only for students/admins.")
+
+        # ---- Courses Page (for students) ----
+        elif menu == "📚 Courses":
+            if role == "Student":
+                st.subheader("📚 Your Courses")
+                
+                # Filter courses for the logged-in student
+                student_courses = df_courses[df_courses['email'] == email]
+
+                if student_courses.empty:
+                    st.write("You are not enrolled in any courses.")
+                else:
+                    # Show courses semester-wise
+                    semesters = student_courses['semester'].unique()
+                    for semester in semesters:
+                        st.markdown(f"### {semester}")
+                        semester_courses = student_courses[student_courses['semester'] == semester]
+                        for _, course_row in semester_courses.iterrows():
+                            st.write(f"📘 {course_row['course_name']}")
+            else:
+                st.warning("⛔ You do not have permission to view courses.")
+
     else:
         st.error("Email not found. Please try again or contact admin.")
