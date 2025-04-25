@@ -5,3 +5,4 @@ requests
 face_recognition
 numpy
 Pillow
+deepface

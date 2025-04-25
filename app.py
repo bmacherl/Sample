@@ -6,8 +6,6 @@ import requests
 import numpy as np
 from PIL import Image
 from io import BytesIO
-import cv2
-import os
 
 # ---- Pie Chart Helper ----
 def pie_chart(attended, missed):
@@ -180,12 +178,12 @@ if email:
         if menu == "📆 Attendance" and user['role'] == "Student":
             st.subheader("Capture and Compare Image for Attendance")
 
-            # Record Attendance Button
-            record_button = st.button("Record Attendance")
-            
-            if record_button:
+            # Button to start webcam capture
+            if st.button("Record Attendance"):
+                st.info("Please take your picture for attendance")
+
                 # Capture image from webcam
-                captured_image = st.camera_input("Take a picture")
+                captured_image = st.camera_input("Capture your image")
                 if captured_image:
                     image = Image.open(captured_image)
                     st.image(image, caption="Captured Image", use_column_width=True)
@@ -197,7 +195,7 @@ if email:
                     def fetch_images_from_github(github_repo_url):
                         image_urls = []
                         for i in range(1, 6):  # Adjust the range as per the number of students in your dataset
-                            image_url = f"{github_repo_url}/students_images/{i}_Bhanu.jpg"  # Modify based on image filenames in your repo
+                            image_url = f"{github_repo_url}/students_images/{i}_Bhanu.jpg"
                             image_urls.append(image_url)
                         return image_urls
 
