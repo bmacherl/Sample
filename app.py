@@ -55,17 +55,15 @@ if email:
 
         # Add visibility conditions based on role and whether student is working
         if user['role'] == "Admin":
-            # Admins can see all options
             menu = st.sidebar.radio("Navigate to:", menu_options)
         elif user['role'] == "Professor":
             # Professors can see all except Courses
-            menu = st.sidebar.radio("Navigate to:", menu_options[:-1])
+            menu = st.sidebar.radio("Navigate to:", menu_options)
         elif user['role'] == "Payroll_Admin":
-            # Payroll Admin can see all except Courses
-            menu = st.sidebar.radio("Navigate to:", menu_options[:-1])
+            menu = st.sidebar.radio("Navigate to:", menu_options)
         elif user['role'] == "Staff":
-            # Staff can see all except Courses
-            menu = st.sidebar.radio("Navigate to:", menu_options[:-1])
+            # Staff can always see Payroll
+            menu = st.sidebar.radio("Navigate to:", menu_options)
         elif user['role'] == "Student":
             # Students can see Profile, Attendance, and Courses, and Payroll if they are working
             if is_student_working:
@@ -138,8 +136,8 @@ if email:
 
         # ---- Payroll Page ----
         elif menu == "💵 Payroll":
-            # Admins, Professors, Payroll Admin, Staff, and Students who are working can access Payroll
-            if role in ["Admin", "Professor", "Payroll_Admin", "Staff"] or is_student_working:
+            # **Staff** and **Professors** always see Payroll; **Students** only see Payroll if working
+            if user['role'] == "Staff" or user['role'] == "Professor" or is_student_working:
                 st.subheader("💵 Payroll")
                 st.write("Payroll summary coming soon!")
             else:
@@ -147,14 +145,14 @@ if email:
 
         # ---- Finances Page ----
         elif menu == "🏦 Finances":
-            if role == "Admin":
+            if user['role'] == "Admin":
                 st.subheader("🏦 Finances")
                 st.write("Fee info and payments coming soon!")
             else:
                 st.warning("Access denied: Finances only for Admins.")
 
         # ---- Courses Page (for students) ----
-        elif menu == "📚 Courses" and role == "Student":
+        elif menu == "📚 Courses" and user['role'] == "Student":
             st.subheader("📚 Your Courses")
             
             # Filter courses for the logged-in student
