@@ -47,9 +47,17 @@ if email:
 
         # Sidebar menu with icons to navigate to different pages
         st.sidebar.title("📂 Menu")
-        menu = st.sidebar.radio("Navigate to:", 
-            ["👤 Profile", "📆 Attendance", "💵 Payroll", "🏦 Finances", "📚 Courses"]
-        )
+        
+        # Create a dynamic menu based on the user role
+        if user['role'] == "Student":
+            menu = st.sidebar.radio("Navigate to:", 
+                ["👤 Profile", "📆 Attendance", "💵 Payroll", "🏦 Finances", "📚 Courses"]
+            )
+        else:
+            menu = st.sidebar.radio("Navigate to:", 
+                ["👤 Profile", "📆 Attendance", "💵 Payroll", "🏦 Finances"]
+            )
+
         role = user['role']
 
         # ---- Profile Page ----
@@ -121,25 +129,22 @@ if email:
                 st.warning("Access denied: Finances only for students/admins.")
 
         # ---- Courses Page (for students) ----
-        elif menu == "📚 Courses":
-            if role == "Student":
-                st.subheader("📚 Your Courses")
-                
-                # Filter courses for the logged-in student
-                student_courses = df_courses[df_courses['email'] == email]
+        elif menu == "📚 Courses" and role == "Student":
+            st.subheader("📚 Your Courses")
+            
+            # Filter courses for the logged-in student
+            student_courses = df_courses[df_courses['email'] == email]
 
-                if student_courses.empty:
-                    st.write("You are not enrolled in any courses.")
-                else:
-                    # Show courses semester-wise
-                    semesters = student_courses['semester'].unique()
-                    for semester in semesters:
-                        st.markdown(f"### {semester}")
-                        semester_courses = student_courses[student_courses['semester'] == semester]
-                        for _, course_row in semester_courses.iterrows():
-                            st.write(f"📘 {course_row['course_name']}")
+            if student_courses.empty:
+                st.write("You are not enrolled in any courses.")
             else:
-                st.warning("⛔ You do not have permission to view courses.")
-
+                # Show courses semester-wise
+                semesters = student_courses['semester'].unique()
+                for semester in semesters:
+                    st.markdown(f"### {semester}")
+                    semester_courses = student_courses[student_courses['semester'] == semester]
+                    for _, course_row in semester_courses.iterrows():
+                        st.write(f"📘 {course_row['course_name']}")
+                
     else:
         st.error("Email not found. Please try again or contact admin.")
