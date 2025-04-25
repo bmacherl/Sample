@@ -45,12 +45,14 @@ if email:
         user = df_users[df_users['email'] == email].squeeze()
         st.success(f"Welcome {user['name']}! You are logged in as **{user['role']}**.")
 
+        # Check if 'working' column exists for students
+        is_student_working = user.get('working', 'No') == "Yes"  # Default to 'No' if 'working' column doesn't exist
+
         # Sidebar menu with icons to navigate to different pages
         st.sidebar.title("📂 Menu")
         
-        # Create a dynamic menu based on the user role
         menu_options = ["👤 Profile", "📆 Attendance", "💵 Payroll", "🏦 Finances", "📚 Courses"]
-        
+
         if user['role'] == "Admin":
             # Admins can see all options
             menu = st.sidebar.radio("Navigate to:", menu_options)
@@ -58,8 +60,8 @@ if email:
             # Professors can see all except Courses
             menu = st.sidebar.radio("Navigate to:", menu_options[:-1])
         elif user['role'] == "Student":
-            # Students can see Profile, Attendance, and Courses
-            if user['working'] == "Yes":  # Assuming 'working' column denotes if the student is working
+            # Students can see Profile, Attendance, and Courses, and Payroll if they are working
+            if is_student_working:
                 menu = st.sidebar.radio("Navigate to:", ["👤 Profile", "📆 Attendance", "💵 Payroll", "📚 Courses"])
             else:
                 menu = st.sidebar.radio("Navigate to:", ["👤 Profile", "📆 Attendance", "📚 Courses"])
@@ -122,7 +124,7 @@ if email:
 
         # ---- Payroll Page ----
         elif menu == "💵 Payroll":
-            if role in ["Admin", "Professor"] or (role == "Student" and user['working'] == "Yes"):
+            if role in ["Admin", "Professor"] or is_student_working:
                 st.subheader("💵 Payroll")
                 st.write("Payroll summary coming soon!")
             else:
