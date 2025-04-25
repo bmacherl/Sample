@@ -45,7 +45,7 @@ if email:
         user = df_users[df_users['email'] == email].squeeze()
         st.success(f"Welcome {user['name']}! You are logged in as **{user['role']}**.")
 
-        # Check if 'working' column exists for students, normalize it
+        # Normalize 'working' column to ensure it works for comparison
         is_student_working = str(user.get('working', 'No')).strip().lower() == "yes"
 
         # Sidebar menu with icons to navigate to different pages
@@ -59,6 +59,12 @@ if email:
             menu = st.sidebar.radio("Navigate to:", menu_options)
         elif user['role'] == "Professor":
             # Professors can see all except Courses
+            menu = st.sidebar.radio("Navigate to:", menu_options[:-1])
+        elif user['role'] == "Payroll_Admin":
+            # Payroll Admin can see all except Courses
+            menu = st.sidebar.radio("Navigate to:", menu_options[:-1])
+        elif user['role'] == "Staff":
+            # Staff can see all except Courses
             menu = st.sidebar.radio("Navigate to:", menu_options[:-1])
         elif user['role'] == "Student":
             # Students can see Profile, Attendance, and Courses, and Payroll if they are working
@@ -132,8 +138,8 @@ if email:
 
         # ---- Payroll Page ----
         elif menu == "💵 Payroll":
-            # Admins, Professors, and Students who are working can access Payroll
-            if role in ["Admin", "Professor"] or is_student_working:
+            # Admins, Professors, Payroll Admin, Staff, and Students who are working can access Payroll
+            if role in ["Admin", "Professor", "Payroll_Admin", "Staff"] or is_student_working:
                 st.subheader("💵 Payroll")
                 st.write("Payroll summary coming soon!")
             else:
