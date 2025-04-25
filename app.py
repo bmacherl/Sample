@@ -53,6 +53,7 @@ if email:
         
         menu_options = ["👤 Profile", "📆 Attendance", "💵 Payroll", "🏦 Finances", "📚 Courses"]
 
+        # Add visibility conditions based on role and whether student is working
         if user['role'] == "Admin":
             # Admins can see all options
             menu = st.sidebar.radio("Navigate to:", menu_options)
@@ -124,6 +125,7 @@ if email:
 
         # ---- Payroll Page ----
         elif menu == "💵 Payroll":
+            # Admins, Professors, and Students who are working can access Payroll
             if role in ["Admin", "Professor"] or is_student_working:
                 st.subheader("💵 Payroll")
                 st.write("Payroll summary coming soon!")
