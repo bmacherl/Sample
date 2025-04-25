@@ -1,13 +1,13 @@
-email,name,role
-bmacherl@asu.edu,Bhanu Varshini Macherla,Admin
-staff1@asu.edu,Staff 1,Staff
-prof1@asu.edu,Professor 1,professor
-payroll1@asu.edu,Payroll Admin,payroll_admin
-admin1@asu.edu,Over All Admin,Admin
-student1@asu.edu,Student 1,Student
-yitingl3@asu.edu,Sylvia ,Student
-sristide@asu.edu,Sristi,Student
-ashkinjo@asu.edu,Ashkin,Student
-kattalur@asu.edu,Karteek,Student
-prof2@asu.edu,Professor 2,professor
-student2@asu.edu,Student 2, Student
+email,name,role,working
+bmacherl@asu.edu,Bhanu Varshini Macherla,Admin,Yes
+staff1@asu.edu,Staff 1,Staff,Yes
+prof1@asu.edu,Professor 1,professor,Yes
+payroll1@asu.edu,Payroll Admin,payroll_admin,Yes
+admin1@asu.edu,Over All Admin,Admin,Yes
+student1@asu.edu,Student 1,Student,Yes
+yitingl3@asu.edu,Sylvia ,Student,No
+sristide@asu.edu,Sristi,Student,No
+ashkinjo@asu.edu,Ashkin,Student,Yes
+kattalur@asu.edu,Karteek,Student,No
+prof2@asu.edu,Professor 2,professor,Yes
+student2@asu.edu,Student 2,Student,No

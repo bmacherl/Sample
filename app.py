@@ -49,14 +49,22 @@ if email:
         st.sidebar.title("📂 Menu")
         
         # Create a dynamic menu based on the user role
-        if user['role'] == "Student":
-            menu = st.sidebar.radio("Navigate to:", 
-                ["👤 Profile", "📆 Attendance", "💵 Payroll", "🏦 Finances", "📚 Courses"]
-            )
+        menu_options = ["👤 Profile", "📆 Attendance", "💵 Payroll", "🏦 Finances", "📚 Courses"]
+        
+        if user['role'] == "Admin":
+            # Admins can see all options
+            menu = st.sidebar.radio("Navigate to:", menu_options)
+        elif user['role'] == "Professor":
+            # Professors can see all except Courses
+            menu = st.sidebar.radio("Navigate to:", menu_options[:-1])
+        elif user['role'] == "Student":
+            # Students can see Profile, Attendance, and Courses
+            if user['working'] == "Yes":  # Assuming 'working' column denotes if the student is working
+                menu = st.sidebar.radio("Navigate to:", ["👤 Profile", "📆 Attendance", "💵 Payroll", "📚 Courses"])
+            else:
+                menu = st.sidebar.radio("Navigate to:", ["👤 Profile", "📆 Attendance", "📚 Courses"])
         else:
-            menu = st.sidebar.radio("Navigate to:", 
-                ["👤 Profile", "📆 Attendance", "💵 Payroll", "🏦 Finances"]
-            )
+            menu = st.sidebar.radio("Navigate to:", ["👤 Profile", "📆 Attendance"])
 
         role = user['role']
 
@@ -114,7 +122,7 @@ if email:
 
         # ---- Payroll Page ----
         elif menu == "💵 Payroll":
-            if role in ["Staff", "Payroll_Admin", "Admin"]:
+            if role in ["Admin", "Professor"] or (role == "Student" and user['working'] == "Yes"):
                 st.subheader("💵 Payroll")
                 st.write("Payroll summary coming soon!")
             else:
@@ -122,11 +130,11 @@ if email:
 
         # ---- Finances Page ----
         elif menu == "🏦 Finances":
-            if role in ["Student", "Admin"]:
+            if role == "Admin":
                 st.subheader("🏦 Finances")
                 st.write("Fee info and payments coming soon!")
             else:
-                st.warning("Access denied: Finances only for students/admins.")
+                st.warning("Access denied: Finances only for Admins.")
 
         # ---- Courses Page (for students) ----
         elif menu == "📚 Courses" and role == "Student":
