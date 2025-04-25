@@ -1,3 +1,7 @@
 streamlit
 pandas
 matplotlib
+requests
+face_recognition
+numpy
+Pillow
