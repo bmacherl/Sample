@@ -1,11 +1,6 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-from deepface import DeepFace
-import requests
-import numpy as np
-from PIL import Image
-from io import BytesIO
 
 # ---- Pie Chart Helper ----
 def pie_chart(attended, missed):
@@ -173,55 +168,6 @@ if email:
                     semester_courses = student_courses[student_courses['semester'] == semester]
                     for _, course_row in semester_courses.iterrows():
                         st.write(f"📘 {course_row['course_name']}")
-
-        # ---- Attendance Model Using DeepFace ----
-        if menu == "📆 Attendance" and user['role'] == "Student":
-            st.subheader("Capture and Compare Image for Attendance")
-
-            # Button to start webcam capture
-            if st.button("Record Attendance"):
-                st.info("Please take your picture for attendance")
-
-                # Capture image from webcam
-                captured_image = st.camera_input("Capture your image")
-                if captured_image:
-                    image = Image.open(captured_image)
-                    st.image(image, caption="Captured Image", use_column_width=True)
-
-                    # GitHub repository URL of student images
-                    github_repo_url = "https://raw.githubusercontent.com/bmacherl/students_images/main"
-
-                    # Fetch student images from GitHub
-                    def fetch_images_from_github(github_repo_url):
-                        image_urls = []
-                        for i in range(1, 6):  # Adjust the range as per the number of students in your dataset
-                            image_url = f"{github_repo_url}/students_images/{i}_Bhanu.jpg"
-                            image_urls.append(image_url)
-                        return image_urls
-
-                    # Compare captured image with images from GitHub
-                    def compare_images(captured_image, image_urls):
-                        captured_image = np.array(captured_image)
-                        captured_encodings = DeepFace.represent(captured_image, model_name="VGG-Face")
-                        for url in image_urls:
-                            try:
-                                response = requests.get(url)
-                                img = Image.open(BytesIO(response.content))
-                                img = np.array(img)
-                                img_encodings = DeepFace.represent(img, model_name="VGG-Face")
-
-                                # Compare the encodings
-                                similarity = DeepFace.verify(captured_encodings, img_encodings)
-                                if similarity['distance'] < 0.6:  # You can adjust the threshold for better accuracy
-                                    return url.split("/")[-1].split(".")[0]  # Return the student's name
-                            except Exception as e:
-                                st.error(f"Error fetching image from URL: {url}. Error: {str(e)}")
-                        return None  # No match found
-
-                    # Fetch images from GitHub and compare with the captured image
-                    image_urls = fetch_images_from_github(github_repo_url)
-                    matched_student = compare_images(image, image_urls)
-                    if matched_student:
-                        st.success(f"Attendance recorded for: {matched_student}")
-                    else:
-                        st.error("No match found! Attendance could not be recorded.")
+                
+    else:
+        st.error("Email not found. Please try again or contact admin.")
